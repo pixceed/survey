@@ -31,6 +31,8 @@ RUN apt-get install -y libglib2.0-0
 # パッケージインストール
 RUN pip install --upgrade pip
 RUN pip install langchain==0.3.0 langchain_community langchain_openai
+RUN pip install langchain-experimental
+RUN pip install langgraph
 
 ## 権限定義 ##
 ARG user_name=ubuntu
