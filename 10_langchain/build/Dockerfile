@@ -33,6 +33,7 @@ RUN pip install --upgrade pip
 RUN pip install langchain==0.3.0 langchain_community langchain_openai
 RUN pip install langchain-experimental
 RUN pip install langgraph
+RUN pip install tavily-python
 
 ## 権限定義 ##
 ARG user_name=ubuntu
