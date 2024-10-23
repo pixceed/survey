@@ -1,0 +1,21 @@
+PassengerId,Satisfied,Pclass,Sex,Name,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
+1,0,3,male,"Sato, Mr. Ren",21,1,0,A/5 211711,870,,Tokyo
+2,1,1,female,"Suzuki, Mrs. Himari",37,1,0,PC 175991,8553.996,C85,Osaka
+3,1,3,female,"Tanaka, Miss. Mei",25,0,0,STON/O2. 31012821,951,,
+4,1,1,female,"Ito, Mrs. Riko",34,1,0,227606,6372,C123,Tokyo
+5,0,3,male,"Takahashi, Mr. Haruto",34,0,0,746900,966,,Tokyo
+6,0,3,male,"Watanabe, Mr. Hinata",,0,0,661754,1014.996,,Nagoya
+7,0,1,male,"Yamamoto, Mr. Itsuki",53,0,0,34926,6223.5,E46,Tokyo
+8,0,3,male,"Nakamura, Master. Yuto",1,3,1,699818,2529,,
+9,1,3,female,"Kobayashi, Mrs. Aoi",26,0,2,695484,1335.996,,Tokyo
+10,1,2,female,"Kato, Mrs. Mio",13,1,0,475472,3608.496,,Osaka
+11,1,3,female,"Yoshida, Miss. Yuina",3,1,1,PP 95491,2004,G6,Tokyo
+12,1,1,female,"Yamada, Miss. Rin",57,0,0,227566,3186,C103,
+13,0,3,male,"Sasaki, Mr. Minato",19,0,0,A/5. 21511,966,,Tokyo
+14,0,3,male,"Yamaguchi, Mr. Hiroto",38,1,5,694164,3753,,Tokyo
+15,0,3,female,"Matsumoto, Miss. Yuna",13,0,0,700812,942.504,,
+16,1,2,female,"Inoue, Mrs. Kotone",54,0,0,497412,1920,,Tokyo
+17,0,3,male,"Kimura, Master. Hiroto",1,4,1,765304,3495,,Nagoya
+18,1,2,male,"Hayashi, Mr. Aoi",,0,0,488746,1560,,Tokyo
+19,0,3,female,"Saito, Mrs.Hina",30,1,0,691526,2160,,Tokyo
+20,1,3,female,"Shimizu, Mrs. Tsumugi",,0,0,5298,867,,Osaka
