@@ -36,9 +36,6 @@ python_repl = PythonREPL()
 # Pythonコードを実行して結果を返す関数
 def execute_python_code(code):
     try:
-        # Pythonコードに必ずprint文を追加する
-        code = f"print({code})" if "print" not in code else code
-        
         # Pythonコードを実行
         result = python_repl.run(code)
         # 実行結果が空の場合
