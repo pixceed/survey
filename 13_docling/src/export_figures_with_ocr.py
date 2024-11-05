@@ -20,14 +20,14 @@ IMAGE_RESOLUTION_SCALE = 2.0
 def main():
     logging.basicConfig(level=logging.INFO)
 
-    # input_doc_path = Path("input/1706.03762v7.pdf")
-    # output_dir = Path("output")
+    input_doc_path = Path("input/1706.03762v7.pdf")
+    output_dir = Path("output/1706.03762v7_2")
 
-    input_doc_path = Path("input/2021r03h_nw_pm1_qs.pdf")
-    output_dir = Path("output/2021r03h_nw_pm1_qs_2")
+    # input_doc_path = Path("input/2021r03h_nw_pm1_qs.pdf")
+    # output_dir = Path("output/2021r03h_nw_pm1_qs_2")
 
     # EasyOCRの言語オプションを設定
-    ocr_options = EasyOcrOptions(lang=["ja"])
+    ocr_options = EasyOcrOptions(lang=["en"])
 
     pipeline_options = PdfPipelineOptions()
     # テーブル構造モデルの使用有無: 使用する

@@ -16,7 +16,7 @@ output_path = "output/2021r03h_nw_pm1_qs_2.md"
 
 
 # EasyOCRの言語オプションを設定
-ocr_options = EasyOcrOptions(lang=["ja"])
+ocr_options = EasyOcrOptions(lang=["en"])
 
 pipeline_options = PdfPipelineOptions()
 # OCRの使用有無: 使用する

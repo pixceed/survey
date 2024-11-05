@@ -27,6 +27,8 @@ RUN apt-get install -y less vim sudo wget curl git zip unzip
 RUN apt-get install -y python-is-python3
 # RUN apt-get install -y libgl1-mesa-dev
 RUN apt-get install -y libglib2.0-0
+RUN pip install docling
+RUN pip install langchain==0.3.0 langchain_community langchain_openai
 
 ## 権限定義 ##
 ARG user_name=ubuntu
