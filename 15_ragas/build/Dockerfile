@@ -27,6 +27,7 @@ RUN apt-get install -y less vim sudo wget curl git zip unzip
 RUN apt-get install -y python-is-python3
 # RUN apt-get install -y libgl1-mesa-dev
 RUN apt-get install -y libglib2.0-0
+RUN apt-get install -y libmagic1 libmagic-dev
 
 # パッケージインストール
 RUN pip install --upgrade pip
@@ -37,6 +38,8 @@ RUN pip install langgraph
 RUN pip install langchain_experimental
 RUN pip install ragas==0.2.6 datasets
 RUN pip install rapidfuzz
+RUN pip install unstructured
+RUN pip install "unstructured[md]"
 
 ## 権限定義 ##
 ARG user_name=ubuntu

@@ -11,8 +11,11 @@ from docling.backend.docling_parse_v2_backend import DoclingParseV2DocumentBacke
 # pdf_path = "input/1706.03762v7.pdf"
 # output_path = "output/1706.03762v7.md"
 
-pdf_path = "input/2021r03h_nw_pm1_qs.pdf"
-output_path = "output/2021r03h_nw_pm1_qs_2.md"
+# pdf_path = "input/2021r03h_nw_pm1_qs.pdf"
+# output_path = "output/2021r03h_nw_pm1_qs_2.md"
+
+pdf_path = "input/140120240521502314.pdf"
+output_path = "output/140120240521502314_docling_ocr.md"
 
 
 # EasyOCRの言語オプションを設定

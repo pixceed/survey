@@ -2,21 +2,21 @@ services:
   ubuntu_python:
     build:
       context: ./build
-      # args:
-      #   - HTTP_PROXY=$HTTP_PROXY
-      #   - http_proxy=$http_proxy
-      #   - HTTPS_PROXY=$HTTPS_PROXY
-      #   - https_proxy=$https_proxy
+      args:
+        - HTTP_PROXY=$HTTP_PROXY
+        - http_proxy=$http_proxy
+        - HTTPS_PROXY=$HTTPS_PROXY
+        - https_proxy=$https_proxy
     container_name: survey_13_docling_ct
     privileged: true
     volumes:
       - ${PWD}:/home/ubuntu/workspace
       - /tmp/.X11-unix/:/tmp/.X11-unix
     environment:
-      # HTTP_PROXY: ${HTTP_PROXY}
-      # http_proxy: ${http_proxy}
-      # HTTPS_PROXY: ${HTTPS_PROXY}
-      # https_proxy: ${https_proxy}
+      HTTP_PROXY: ${HTTP_PROXY}
+      http_proxy: ${http_proxy}
+      HTTPS_PROXY: ${HTTPS_PROXY}
+      https_proxy: ${https_proxy}
       TZ: Asia/Tokyo
       DISPLAY: $DISPLAY
       QT_X11_NO_MITSHM: '1'
