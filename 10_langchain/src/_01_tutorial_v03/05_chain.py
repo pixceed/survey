@@ -1,68 +1,127 @@
 import os
 from dotenv import load_dotenv
-import tiktoken
-from langchain_openai import AzureChatOpenAI
-from langchain_core.prompts import PromptTemplate
-from langchain_core.output_parsers import StrOutputParser
-from langchain.callbacks import get_openai_callback
+from pydantic import BaseModel, Field
+
+from langchain_openai import ChatOpenAI, AzureChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser
 
 # .envファイルから環境変数を読み込み
 load_dotenv()
 
-# トークンの使用量を計算する関数
-def count_tokens(text, model_name="gpt-4o"):
-    encoding = tiktoken.encoding_for_model(model_name)
-    return len(encoding.encode(text))
-
-# 料金を計算する関数（ここでは仮に1トークンあたり0.001ドルとして計算）
-def calculate_cost(input_tokens, output_tokens):
-    input_cost = input_tokens * 0.0000025
-    output_cost = output_tokens * 0.0000075
-    return input_cost + output_cost
-
 def main():
 
-    # プロンプトテンプレートの準備
-    prompt_template = PromptTemplate(
-        input_variables=["product"],
-        template="{product}を作る日本語の新会社名を1つ提案してください",
+    # ChatModelの準備
+    chat_model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    # chat_model = AzureChatOpenAI(
+    #     openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+    #     azure_deployment=os.getenv("AZURE_CHAT_DEPLOYMENT"),
+    #     temperature=0
+    # )
+
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", "ユーザーが入力した料理のレシピを教えてください。"),
+            ("human", "{dish}"),
+        ]
+    )
+
+    chain = prompt | chat_model
+
+    ai_message = chain.invoke({"dish": "カレー"})
+    print(ai_message.content)
+
+    print("\n---------------------------------------------------------------------\n")
+
+    class Recipe(BaseModel):
+        ingredients: list[str] = Field(description="ingredients of the dish")
+        steps: list[str] = Field(description="steps to make the dish")
+
+    output_parser = PydanticOutputParser(pydantic_object=Recipe)
+
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                "ユーザーが入力した料理のレシピを教えてください。\n\n"
+                "{format_instructions}",
+            ),
+            ("human", "{dish}"),
+        ]
+    )
+    prompt_with_format_instructions = prompt.partial(
+        format_instructions=output_parser.get_format_instructions()
     )
 
     # ChatModelの準備
-    chat_model = AzureChatOpenAI(
-        openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-        azure_deployment=os.getenv("AZURE_CHAT_DEPLOYMENT"),
-        temperature=0
+    chat_model = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind(
+        response_format={"type": "json_object"} # JSONモードを有効化
     )
 
-    # OutputParserの準備
-    output_parser = StrOutputParser()
+    chain = prompt_with_format_instructions | chat_model | output_parser
 
-    # チェーンをつなげて実行
-    with get_openai_callback() as cb:
-        product_name = "家庭用ロボット"
-        chain = prompt_template | chat_model | output_parser
-        output = chain.invoke({"product": product_name})
-        print(output)
+    recipe = chain.invoke({"dish": "カレー"})
+    print()
+    print(type(recipe))
+    print(recipe)
 
-        # 結果を表示
-        print()
-        print(f"提案された会社名: {output}")
-        print(f"使用したトークン数: {cb.total_tokens}")
-        print(f"入力トークン数: {cb.prompt_tokens}")
-        print(f"出力トークン数: {cb.completion_tokens}")
-        print(f"API利用料金: ${cb.total_cost:.6f}")
+    print("\n---------------------------------------------------------------------\n")
 
-    # # トークンの使用量を計算（入力プロンプトと出力の両方で計算）
-    # prompt_text = prompt_template.template.format(product=product_name)
-    # prompt_tokens = count_tokens(prompt_text)  # 入力トークン
-    # response_tokens = count_tokens(output)     # 出力トークン
+    # with_structured_output を使う場合
+    # 構造化データの出力
 
-    # cost = calculate_cost(prompt_tokens, response_tokens)
-    # print()
-    # print("入力プロンプトのトークン数:", prompt_tokens)
-    # print("出力のトークン数:", response_tokens)
-    # print("コスト:", cost, "ドル")
+    class Recipe(BaseModel):
+        ingredients: list[str] = Field(description="ingredients of the dish")
+        steps: list[str] = Field(description="steps to make the dish")
+
+
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", "ユーザーが入力した料理のレシピを教えてください。"),
+            ("human", "{dish}"),
+        ]
+    )
+
+    # ChatModelの準備
+    chat_model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+    chain = prompt | chat_model.with_structured_output(Recipe)
+
+    recipe = chain.invoke({"dish": "カレー"})
+
+    print(type(recipe))
+    print(recipe)
+
+    print("\n---------------------------------------------------------------------\n")
+
+    # ChainとChain
+
+    cot_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", "ユーザーの質問にステップバイステップで回答してください。"),
+            ("human", "{question}"),
+        ]
+    )
+
+    cot_chain = cot_prompt | chat_model | StrOutputParser()
+
+    summarize_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", "ステップバイステップで考えた回答から結論だけ抽出してください。"),
+            ("human", "{text}"),
+        ]
+    )
+
+    summarize_chain = summarize_prompt | chat_model | StrOutputParser()
+
+    cot_summarize_chain = cot_chain | summarize_chain
+
+    answer = cot_summarize_chain.invoke({"question": "10 + 2 * 3"})
+
+    print(answer)
 
 if __name__=="__main__":
+    print("\n---------------------------------------------------------------------\n")
     main()
+    print("\n---------------------------------------------------------------------\n")
+
