@@ -59,7 +59,7 @@ def main():
         judgement_reason: str = Field(
             default="", description="品質チェックの判定理由"
         )
-    
+
     # ＜LLMと埋め込みモデルの準備＞
     # LLMの準備
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
@@ -92,7 +92,7 @@ def main():
         selected_role = ROLES[role_number.strip()]["name"]
 
         return {"current_role": selected_role}
-    
+
     def answerring_node(state: State) -> dict[str, Any]:
         query = state.query
         role = state.current_role
@@ -117,7 +117,7 @@ def main():
         answer = chain.invoke({"role": role, "role_details": role_details, "query": query})
 
         return {"messages": [answer]}
-    
+
     class Judgement(BaseModel):
         reason: str = Field(default="", description="判定理由")
         judge: bool = Field(default=False, description="判定結果")
@@ -137,6 +137,7 @@ def main():
         )
 
         chain = prompt | llm.with_structured_output(Judgement)
+        
 
         result: Judgement = chain.invoke({"query": query, "answer": answer})
 
@@ -144,7 +145,7 @@ def main():
             "current_judge": result.judge,
             "judgement_reason": result.reason
         }
-    
+
 
     # ＜グラフの作成＞
     workflow = StateGraph(State)
@@ -160,7 +161,7 @@ def main():
 
     # selectionノードからansweringノードへ
     workflow.add_edge("selection", "answering")
-    
+
     # answeringノードからcheckノードへ
     workflow.add_edge("answering", "check")
 
