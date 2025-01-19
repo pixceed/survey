@@ -7,7 +7,7 @@ services:
       #   - http_proxy=$http_proxy
       #   - HTTPS_PROXY=$HTTPS_PROXY
       #   - https_proxy=$https_proxy
-    container_name: ubuntu24_python311_ct
+    container_name: survey_19_rag_ct
     privileged: true
     volumes:
       - ${PWD}:/home/ubuntu/workspace
