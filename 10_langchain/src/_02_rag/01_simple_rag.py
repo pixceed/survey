@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-from langchain_openai import ChatOpenAI, AzureChatOpenAI, OpenAIEmbeddings
+from langchain_openai import ChatOpenAI, AzureChatOpenAI, OpenAIEmbeddings, AzureOpenAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.document_loaders import GitLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -18,8 +18,20 @@ def main():
     # ＜LLMと埋め込みモデルの準備＞
     # ChatModelの準備
     chat_model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    # chat_model = AzureChatOpenAI(
+    #     openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+    #     azure_deployment=os.getenv("AZURE_CHAT_DEPLOYMENT"),
+    #     temperature=0
+    # )
+
     # 埋め込みモデルの準備
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    # embeddings = AzureOpenAIEmbeddings(
+    #     azure_deployment=os.getenv("AZURE_EMBEDDING_DEPLOYMENT"),
+    #     openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION")
+    # )
+
+
 
     # ＜ドキュメントの読み込み＞
     def file_filter(file_path: str) -> bool:
