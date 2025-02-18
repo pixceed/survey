@@ -6,32 +6,59 @@ from langchain_openai import ChatOpenAI, AzureChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser
 
+from langchain_deepseek import ChatDeepSeek
+
 # .envファイルから環境変数を読み込み
 load_dotenv()
 
 def main():
 
     # ChatModelの準備
-    chat_model = ChatOpenAI(
+    llm_deepseek_v3 = ChatDeepSeek(
         model="deepseek-chat",
-        base_url="https://api.deepseek.com/v1",
-        api_key=os.getenv("DEEPSEEK_API_KEY"),
-        temperature=0
+        temperature=0,
+        max_tokens=None,
+        timeout=None,
+        max_retries=2,
     )
+    llm_deepseek_r1 = ChatDeepSeek(model="deepseek-reasoner")
     
+    prompt1 = ChatPromptTemplate.from_template(
+"""
+以下の質問に回答してください。
+
+# 質問
+{question}
+"""
+    )
+
+    chain1 = prompt1 | llm_deepseek_v3 | StrOutputParser()
+
+    question = "円周率が3.14の理由を教えて"
+    answer = chain1.invoke({"question": question})
+    print(answer)
+
+    print("\n---------------------------------------------------------------------\n")
 
 
-    prompt = ChatPromptTemplate.from_messages(
+    prompt2 = ChatPromptTemplate.from_messages(
         [
-            ("system", "ユーザーが入力した料理のレシピを教えてください。"),
-            ("human", "{dish}"),
+            ("human", 
+"""
+
+# 質問
+{question}
+
+"""
+            ),
         ]
     )
 
-    chain = prompt | chat_model
+    chain2 = prompt2 | llm_deepseek_r1 | StrOutputParser()
 
-    ai_message = chain.invoke({"dish": "カレー"})
-    print(ai_message.content)
+    question = "円周率が3.14の理由を教えて"
+    ai_message = chain2.invoke({"question": question})
+    print(ai_message)
 
 
 if __name__=="__main__":
