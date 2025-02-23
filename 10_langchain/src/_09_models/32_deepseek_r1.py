@@ -2,25 +2,30 @@ import os
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
-from langchain_openai import ChatOpenAI, AzureChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser
+
+from langchain_deepseek import ChatDeepSeek
 
 # .envファイルから環境変数を読み込み
 load_dotenv()
 
 def main():
 
-    # ChatModelの準備
-    llm_o3_mini = ChatOpenAI(model="o3-mini")
-    # question = "円周率が3.14の理由を教えて"
-    # output = llm_o3_mini.invoke(question)
-    
+    ##########################################
+    # モデルの準備
+    ##########################################
+
+    llm_deepseek_r1 = ChatDeepSeek(model="deepseek-reasoner")    
+
+    ##########################################
+    # プロンプト
+    ##########################################
+
     prompt = ChatPromptTemplate.from_messages(
         [
             ("human", 
 """
-
 # 質問
 {question}
 
@@ -29,7 +34,11 @@ def main():
         ]
     )
 
-    chain = prompt | llm_o3_mini | StrOutputParser()
+    ##########################################
+    # 実行
+    ##########################################
+
+    chain = prompt | llm_deepseek_r1 | StrOutputParser()
 
     question = "円周率が3.14の理由を教えて"
     ai_message = chain.invoke({"question": question})
@@ -40,3 +49,4 @@ if __name__=="__main__":
     print("\n---------------------------------------------------------------------\n")
     main()
     print("\n---------------------------------------------------------------------\n")
+        
