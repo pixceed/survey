@@ -29,6 +29,7 @@ RUN apt-get install -y --no-install-recommends python3-pip
 RUN apt-get install -y less vim sudo wget curl git zip unzip
 RUN apt-get install -y python-is-python3
 RUN apt-get install -y libglib2.0-0
+RUN apt-get install -y libopencv-dev
 
 ## 権限定義 ##
 ARG user_name=ubuntu
