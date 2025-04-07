@@ -1,0 +1,79 @@
+# version: '3.8'
+
+services:
+  frontend_react:
+    build:
+      context: ./frontend/build
+      args:
+        - NODE_VER=22-slim
+        - HTTP_PROXY=$HTTP_PROXY
+        - http_proxy=$http_proxy
+        - HTTPS_PROXY=$HTTPS_PROXY
+        - https_proxy=$https_proxy
+    container_name: webapptemp_frontend_ct
+    volumes:
+      - ${PWD}/frontend:/usr/src/app/
+      - /tmp/.X11-unix/:/tmp/.X11-unix
+    environment:
+      HTTP_PROXY: ${HTTP_PROXY}
+      http_proxy: ${http_proxy}
+      HTTPS_PROXY: ${HTTPS_PROXY}
+      https_proxy: ${https_proxy}
+      VITE_APP_IP: ${VITE_APP_IP}
+      VITE_FRONTEND_PORT: ${VITE_FRONTEND_PORT}
+      VITE_BACKEND_PORT: ${VITE_BACKEND_PORT}
+    ports:
+      - "${VITE_FRONTEND_PORT:-7700}:${VITE_FRONTEND_PORT:-7700}"
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+
+    # command: sh -c "npm install && npm run dev"
+
+  backend_flask:
+    build:
+      context: ./backend/build
+      args:
+        - HTTP_PROXY=$HTTP_PROXY
+        - http_proxy=$http_proxy
+        - HTTPS_PROXY=$HTTPS_PROXY
+        - https_proxy=$https_proxy
+    container_name: webapptemp_backend_ct
+    privileged: true
+    volumes:
+      - ${PWD}/backend:/home/ubuntu/workspace
+      - /tmp/.X11-unix/:/tmp/.X11-unix
+    environment:
+      HTTP_PROXY: ${HTTP_PROXY}
+      http_proxy: ${http_proxy}
+      HTTPS_PROXY: ${HTTPS_PROXY}
+      https_proxy: ${https_proxy}
+      TZ: Asia/Tokyo
+      DISPLAY: $DISPLAY
+      QT_X11_NO_MITSHM: '1'
+      VITE_APP_IP: ${VITE_APP_IP}
+      VITE_FRONTEND_PORT: ${VITE_FRONTEND_PORT}
+      VITE_BACKEND_PORT: ${VITE_BACKEND_PORT}
+      # openai
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      # azure openai
+      OPENAI_API_TYPE: ${OPENAI_API_TYPE}
+      AZURE_OPENAI_API_KEY: ${AZURE_OPENAI_API_KEY}
+      AZURE_OPENAI_API_VERSION: ${AZURE_OPENAI_API_VERSION}
+      OPENAI_API_VERSION: ${OPENAI_API_VERSION}
+      AZURE_OPENAI_ENDPOINT: ${AZURE_OPENAI_ENDPOINT}
+      AZURE_CHAT_DEPLOYMENT: ${AZURE_CHAT_DEPLOYMENT}
+      AZURE_EMBEDDING_DEPLOYMENT: ${AZURE_EMBEDDING_DEPLOYMENT}
+      AZURE_EMBEDDING_MODEL_NAME: ${AZURE_EMBEDDING_MODEL_NAME}
+    devices:
+      - /dev/video0:/dev/video0:mwr
+    ports:
+      - "${VITE_BACKEND_PORT:-7701}:${VITE_BACKEND_PORT:-7701}"
+    env_file:
+      - .env
+    shm_size: '2gb'
+    stdin_open: true
+    tty: true
+
+    # command: sh -c "python server.py"
